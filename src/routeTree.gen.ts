@@ -14,8 +14,10 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as Essai2Import } from './routes/essai2'
-import { Route as layoutImport } from './routes/__layout'
+import { Route as LayoutImport } from './routes/_layout'
 import { Route as R404Import } from './routes/__404'
+import { Route as HomeEssaiImport } from './routes/home.essai'
+import { Route as LayoutUserImport } from './routes/_layout/user'
 import { Route as PostsPostIdEditImport } from './routes/posts_.$postId.edit'
 
 // Create Virtual Routes
@@ -23,6 +25,7 @@ import { Route as PostsPostIdEditImport } from './routes/posts_.$postId.edit'
 const EssaiLazyImport = createFileRoute('/essai')()
 const AboutLazyImport = createFileRoute('/about')()
 const IndexLazyImport = createFileRoute('/')()
+const UserDoeLazyImport = createFileRoute('/user/doe')()
 const PostIdLazyImport = createFileRoute('/post/$id')()
 
 // Create/Update Routes
@@ -42,8 +45,8 @@ const Essai2Route = Essai2Import.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const layoutRoute = layoutImport.update({
-  id: '/__layout',
+const LayoutRoute = LayoutImport.update({
+  id: '/_layout',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -57,10 +60,25 @@ const IndexLazyRoute = IndexLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
 
+const UserDoeLazyRoute = UserDoeLazyImport.update({
+  path: '/user/doe',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/user/doe.lazy').then((d) => d.Route))
+
 const PostIdLazyRoute = PostIdLazyImport.update({
   path: '/post/$id',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/post.$id.lazy').then((d) => d.Route))
+
+const HomeEssaiRoute = HomeEssaiImport.update({
+  path: '/home/essai',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const LayoutUserRoute = LayoutUserImport.update({
+  path: '/user',
+  getParentRoute: () => LayoutRoute,
+} as any)
 
 const PostsPostIdEditRoute = PostsPostIdEditImport.update({
   path: '/posts/$postId/edit',
@@ -79,8 +97,8 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof R404Import
       parentRoute: typeof rootRoute
     }
-    '/__layout': {
-      preLoaderRoute: typeof layoutImport
+    '/_layout': {
+      preLoaderRoute: typeof LayoutImport
       parentRoute: typeof rootRoute
     }
     '/essai2': {
@@ -95,8 +113,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EssaiLazyImport
       parentRoute: typeof rootRoute
     }
+    '/_layout/user': {
+      preLoaderRoute: typeof LayoutUserImport
+      parentRoute: typeof LayoutImport
+    }
+    '/home/essai': {
+      preLoaderRoute: typeof HomeEssaiImport
+      parentRoute: typeof rootRoute
+    }
     '/post/$id': {
       preLoaderRoute: typeof PostIdLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/user/doe': {
+      preLoaderRoute: typeof UserDoeLazyImport
       parentRoute: typeof rootRoute
     }
     '/posts/$postId/edit': {
@@ -111,11 +141,13 @@ declare module '@tanstack/react-router' {
 export const routeTree = rootRoute.addChildren([
   IndexLazyRoute,
   R404Route,
-  layoutRoute,
+  LayoutRoute.addChildren([LayoutUserRoute]),
   Essai2Route,
   AboutLazyRoute,
   EssaiLazyRoute,
+  HomeEssaiRoute,
   PostIdLazyRoute,
+  UserDoeLazyRoute,
   PostsPostIdEditRoute,
 ])
 
