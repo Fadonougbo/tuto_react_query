@@ -1,0 +1,56 @@
+
+#dashboard_head {
+
+    h1 {
+        font-size: 4rem;
+        text-align: center;
+        color: rgb(99 48 80);
+        //background-image: url('../assert/gta.jpg');
+    }
+    margin: 1rem 0;
+}
+
+#message_area_container {
+    width:100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    label {
+        font-size: 1.5rem;
+        text-transform: capitalize;
+    }
+
+    textarea {
+        width: 70%;
+        min-height: 10rem;
+        resize: none;
+        border-radius: 0.4rem;
+        border: #7f4c6c 3px solid;
+        outline-color: #D47CA4;
+
+    }
+}
+
+
+#submit_button_container {
+
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 1.5rem 0;
+
+    button {
+
+        text-transform: capitalize;
+        background-color: goldenrod;
+        width: 20%;
+        border: none;
+        padding: 0.5rem;
+        font-size: 2rem;
+        cursor: pointer;
+        color:rgb(99 48 80);
+        border-radius: 10px;
+        background-color: #D47CA4;
+    }
+}
