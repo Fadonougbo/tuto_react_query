@@ -1,9 +1,11 @@
-import { Outlet } from "@tanstack/react-router"
-import React from "react" 
+import ky from "ky";
+import { redirectDocument } from "react-router-dom";
 
-export const Delete=()=> {
 
-    return (
-        <div>Delete <Outlet/> </div>
-    )
+export const deleteAction=async ({params})=>{
+    
+    ky.delete(`http://localhost:3000/data/${params.id}`)
+ 
+    return redirectDocument('/');
 }
+

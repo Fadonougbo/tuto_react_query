@@ -1,30 +1,39 @@
 import React from "react"
 import { createRoot } from "react-dom/client"
-import {createBrowserRouter,Link,Outlet,RouterProvider} from "react-router-dom";
+import {createBrowserRouter,RouterProvider} from "react-router-dom";
 import { NotFound } from "../components/NotFound";
-import { rootAction, rootLoader, Root } from "../components/Root";
-import { Info, infoAction, infoLoader } from "../components/Info";
+import { Root } from "../components/Root";
+import { Create, createAction } from "../components/Create";
+import { Home, homeLoader } from "../components/Home";
+import { Update, updateAction, updateLoader } from "../components/Update";
+import { deleteAction } from "../components/Delete";
 
   const router = createBrowserRouter([
     {
-      path: "/home",
-      element: <Root/>,
-      errorElement:<NotFound/>,
-      loader:rootLoader,
-      action:rootAction,
-      children:[
+       path:'/',
+       element:<Root/>,
+       children:[
         {
-            path:'info',
-            element:<Info/>,
-            action:infoAction,
-            loader:infoLoader
-
+          index:true,
+          element:<Home/>,
+          loader:homeLoader
+        },
+        {
+          path:'create',
+          element:<Create/>,
+          action:createAction
+        },
+        {
+          path:'update/:id',
+          element:<Update/>,
+          loader:updateLoader,
+          action:updateAction
+        },
+        {
+          path:'delete/:id',
+          action:deleteAction
         }
-      ]
-    },
-    {
-        path:'/user/:id',
-        element:<div>User page </div>
+       ]
     }
   ]);
 

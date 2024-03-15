@@ -1,5 +1,5 @@
 import React from "react"
-import { useLoaderData, useRouteError } from "react-router-dom"
+import {useRouteError } from "react-router-dom"
 
 export const NotFound=()=> {
 
