@@ -7,11 +7,13 @@ import { Create, createAction } from "../components/Create";
 import { Home, homeLoader } from "../components/Home";
 import { Update, updateAction, updateLoader } from "../components/Update";
 import { deleteAction } from "../components/Delete";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
+const client=new QueryClient()
   const router = createBrowserRouter([
     {
        path:'/',
-       element:<Root/>,
+       element:<QueryClientProvider client={client} ><Root/></QueryClientProvider>,
        children:[
         {
           index:true,
@@ -37,5 +39,13 @@ import { deleteAction } from "../components/Delete";
     }
   ]);
 
-createRoot(document.querySelector('#root') as HTMLDivElement).render(<RouterProvider router={router} />)
+  
+
+createRoot(document.querySelector('#root') as HTMLDivElement).render(
+
+  
+    <RouterProvider router={router} />
+  
+  
+  )
 

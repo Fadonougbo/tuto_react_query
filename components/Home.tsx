@@ -1,8 +1,9 @@
 import ky from "ky"
 import React from "react"
+import { useQuery,useMutation,useQueryClient,useQueries,useIsFetching } from "@tanstack/react-query"
 import { Form, Link, useLoaderData } from "react-router-dom"
 
-const block=new Promise((res,rej)=> {
+export const block=new Promise((res,rej)=> {
 
     setTimeout(()=> {
         res(true)
@@ -18,18 +19,97 @@ export type DataType={
     active:string
 }
 
+export const homeLoader=async ()=> {
+
+  
+    const data=await ky.get('http://localhost:3000/data').json<DataType[]>()
+
+    return data;
+
+}
+
+const fetchSpecifiqueData=async (id)=>{
+
+    const data=await ky.get(`http://localhost:3000/data/${id}`).json<DataType[]>()
+
+    return data;
+}
+
+const postTodo=async ()=>{
+    console.log('ok');
+    const data=await ky.post('http://localhost:3000/data',{
+        json:{
+            username:'testuser',
+            usermail:'testmail',
+            userphone:'testphone',
+            active:'1'
+        }
+    }).json()
+    return data;
+
+}
+
 export const Home=()=> {
 
+    /* const idLists=['654c','0c77','2859']
 
-    const loaderData=useLoaderData() as DataType[];
 
-    console.log(loaderData);
 
-    const unorderLists=loaderData.map((element)=> {
+        const response=useQueries({
+            queries:idLists.map((id)=> {
+                return {
+                    queryKey:['posts keys',id],
+                    queryFn:()=>fetchSpecifiqueData(id),
+                }
+            })
+        })
+
+      console.log(response[0].data) */
+
+
+    //const queryClient = useQueryClient()
+
+    const globalFetching = useIsFetching()
+
+    console.log(globalFetching);
+
+    const {isLoading,isPending,error,data,isSuccess,isFetching,isStale,fetchStatus}=useQuery({
+        queryKey:['posts keys'],
+        queryFn:homeLoader,
+        staleTime:5000,
+        refetchOnWindowFocus:true,
+        networkMode:'always'
+    })
+
+
+    if(error) {
+        console.log('error',error);
+    }
+
+    //console.log(`loading=> ${isLoading}`,`fetching => ${isFetching}`,data,`pending=> ${isPending}`,`success=>${isSuccess}`);
+
+    if(isFetching) {
+        //console.log(`fetching => ${isFetching}`,fetchStatus);
+    }
+
+    if(isStale) {
+        //console.log(`stale=> ${isStale}`);
+    }
+
+    if(isPending||isLoading) {
+
+        return <h1>Wait...</h1>
+    }
+
+
+    const elements=data||[]
+
+
+    //const loaderData=useLoaderData() as DataType[];
+
+    const unorderLists=elements.map((element)=> {
 
         const {id,usermail,username,userphone}=element
-
-      
 
             return (
 
@@ -38,15 +118,16 @@ export const Home=()=> {
                         <li>phone: {userphone}</li>
                         <li>mail: {usermail}</li>
                         <li className="flex justify-center items-center my-2 w-full" >
-                            <Link to={`/update/${id}`} className="bg-purple-700 mx-4 px-2 text-lg text-white" >Edite</Link>
+                            <Link to={`/update/${id}`} className="bg-purple-700 mx-4 px-2 rounded text-lg text-white" >
+                                Edite
+                            </Link>
                             <Form action={`/delete/${id} `} method="POST">
-                                <button  className="bg-red-700 px-2 text-lg text-white" >
+                                <button  className="bg-red-700 px-2 rounded text-lg text-white" >
                                     delete
                                 </button>
                             </Form>
                             
                         </li>
-                       
                 </ul>
             )
        
@@ -66,11 +147,3 @@ export const Home=()=> {
 
 }
 
-export const homeLoader=async ()=> {
-
-    console.log('ok');
-    const data=await ky.get('http://localhost:3000/data').json<DataType[]>()
-
-    return data;
-
-}
