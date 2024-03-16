@@ -8,12 +8,16 @@ import { Home, homeLoader } from "../components/Home";
 import { Update, updateAction, updateLoader } from "../components/Update";
 import { deleteAction } from "../components/Delete";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 const client=new QueryClient()
   const router = createBrowserRouter([
     {
        path:'/',
-       element:<QueryClientProvider client={client} ><Root/></QueryClientProvider>,
+       element:<QueryClientProvider client={client} >
+                  <Root/>
+                  <ReactQueryDevtools initialIsOpen={false} />
+               </QueryClientProvider>,
        children:[
         {
           index:true,

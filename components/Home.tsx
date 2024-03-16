@@ -1,6 +1,6 @@
 import ky from "ky"
 import React from "react"
-import { useQuery,useMutation,useQueryClient,useQueries,useIsFetching, useInfiniteQuery } from "@tanstack/react-query"
+import { useQuery,useMutation,keepPreviousData,useQueryClient,useQueries,useIsFetching, useInfiniteQuery } from "@tanstack/react-query"
 import { Form, Link, useLoaderData } from "react-router-dom"
 
 export const block=new Promise((res,rej)=> {
@@ -114,16 +114,22 @@ export const Home=()=> {
     const {isLoading,isPending,error,data,isSuccess,isFetching,isStale,refetch,fetchStatus}=useQuery({
         queryKey:['posts2'],
         queryFn:homeLoader2,
-        //staleTime:5000,
+        staleTime:5000,
         refetchOnWindowFocus:true,
-        networkMode:'always',
-        //initialData:[]
+        select(data) {
+            console.log(data);
+
+            return data
+        },
+        placeholderData:keepPreviousData,
+        
         
     })
 
     const queryClient = useQueryClient()
 
-    
+
+    console.log(queryClient.getQueriesData({queryKey:['posts2']}));
 
 
     const mutation=useMutation({
@@ -139,7 +145,7 @@ export const Home=()=> {
     })
 
     //console.log(mutation.data);
-   
+   //console.log('keep',keepPreviousData);
 
 
     if(error) {
