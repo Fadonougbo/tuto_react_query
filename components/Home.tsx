@@ -28,10 +28,10 @@ export const homeLoader=async ()=> {
 
 }
 
-export const homeLoader2=async ()=> {
+export const homeLoader2=async ({signal})=> {
 
   
-    const data=await ky.get('http://localhost:3000/data').json<DataType[]>()
+    const data=await ky.get('http://localhost:3000/data',{signal}).json<DataType[]>()
 
     return data
 
@@ -50,7 +50,7 @@ const postTodo=async (element)=>{
     
     const data=await ky.post('http://localhost:3000/data',{
         json:element
-    }).json()
+    }).json<DataType>()
 
     
 
@@ -61,7 +61,7 @@ const postTodo=async (element)=>{
 export const infinitQuery=async ({pageParam})=> {
 
     console.log(pageParam);
-    const data=await ky.get(`http://localhost:3000/data?_limit=3&_start=1`).json()
+    const data=await ky.get(`http://localhost:3000/data?_limit=3&_start=1`).json<DataType[]>()
 
     return data
 
@@ -95,12 +95,7 @@ export const Home=()=> {
         getNextPageParam: (lastPage, pages) =>4,
     }) */
 
-    const mutation=useMutation({
-        mutationKey:['mutation key'],
-        mutationFn:postTodo
-    })
-
-    console.log(mutation.data);
+    
 
 
 /* 
@@ -117,7 +112,7 @@ export const Home=()=> {
     //console.log(globalFetching);
 
     const {isLoading,isPending,error,data,isSuccess,isFetching,isStale,refetch,fetchStatus}=useQuery({
-        queryKey:['posts keys'],
+        queryKey:['posts2'],
         queryFn:homeLoader2,
         //staleTime:5000,
         refetchOnWindowFocus:true,
@@ -126,6 +121,24 @@ export const Home=()=> {
         
     })
 
+    const queryClient = useQueryClient()
+
+    
+
+
+    const mutation=useMutation({
+        mutationKey:['mutation key'],
+        mutationFn:postTodo,
+        onSuccess(data, variables, context) {
+          console.log('c',context);
+           /* queryClient.setQueryData(['posts2'],(oldData)=> {
+
+                return [data,...oldData]
+           }) */
+        },
+    })
+
+    //console.log(mutation.data);
    
 
 
@@ -149,7 +162,7 @@ export const Home=()=> {
     }
  
 
-    const elements=data
+    const elements=data||[]
 
 
     //const loaderData=useLoaderData() as DataType[];
@@ -174,6 +187,7 @@ export const Home=()=> {
                                 </button>
                             </Form>
                             
+                            
                         </li>
                 </ul>
             )
@@ -184,17 +198,19 @@ export const Home=()=> {
 
     return (
         
-        <div className="flex w-full overflow-x-hidden" >
-            <section className="flex flex-wrap justify-evenly w-full" >
-                {unorderLists.length>0?unorderLists:<h1>Empty</h1>}
-            </section>
+        <div className="flex flex-col w-full overflow-x-hidden" >
             <button onClick={()=>refetch()} >refetch</button>
             <button onClick={()=>mutation.mutate({
             username:'testuser',
-            usermail:'testmail',
+            usermail:'testmail2',
             userphone:'testphone',
             active:'1'
         })} >add mutation data </button>
+        <button onClick={()=>queryClient.invalidateQueries()} >invalidate</button>
+            <section className="flex flex-wrap justify-evenly w-full" >
+                {unorderLists.length>0?unorderLists:<h1>Empty</h1>}
+            </section>
+            
         </div>
 
     )

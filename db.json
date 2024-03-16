@@ -1,13 +1,6 @@
 {
   "data": [
     {
-      "username": "1_fadougbo33AAA gautier",
-      "userphone": "3333",
-      "usermail": "111@dokf.co",
-      "active": "1",
-      "id": "654c"
-    },
-    {
       "id": "774e",
       "username": "2_fadougbogautier@gmail.com",
       "userphone": "3333333333333333",
@@ -55,13 +48,6 @@
       "userphone": "3333333333333333",
       "usermail": "fadougbo@g.com",
       "active": "0"
-    },
-    {
-      "id": "064e",
-      "username": "testuser",
-      "usermail": "testmail",
-      "userphone": "testphone",
-      "active": "1"
     }
   ]
 }
