@@ -1,6 +1,6 @@
 import ky from "ky"
 import React from "react"
-import { useQuery,useMutation,useQueryClient,useQueries,useIsFetching } from "@tanstack/react-query"
+import { useQuery,useMutation,useQueryClient,useQueries,useIsFetching, useInfiniteQuery } from "@tanstack/react-query"
 import { Form, Link, useLoaderData } from "react-router-dom"
 
 export const block=new Promise((res,rej)=> {
@@ -24,9 +24,20 @@ export const homeLoader=async ()=> {
   
     const data=await ky.get('http://localhost:3000/data').json<DataType[]>()
 
-    return data;
+    return data
 
 }
+
+export const homeLoader2=async ()=> {
+
+  
+    const data=await ky.get('http://localhost:3000/data').json<DataType[]>()
+
+    return data
+
+}
+
+
 
 const fetchSpecifiqueData=async (id)=>{
 
@@ -35,17 +46,24 @@ const fetchSpecifiqueData=async (id)=>{
     return data;
 }
 
-const postTodo=async ()=>{
-    console.log('ok');
+const postTodo=async (element)=>{
+    
     const data=await ky.post('http://localhost:3000/data',{
-        json:{
-            username:'testuser',
-            usermail:'testmail',
-            userphone:'testphone',
-            active:'1'
-        }
+        json:element
     }).json()
+
+    
+
     return data;
+
+}
+
+export const infinitQuery=async ({pageParam})=> {
+
+    console.log(pageParam);
+    const data=await ky.get(`http://localhost:3000/data?_limit=3&_start=1`).json()
+
+    return data
 
 }
 
@@ -69,24 +87,53 @@ export const Home=()=> {
 
     //const queryClient = useQueryClient()
 
-    const globalFetching = useIsFetching()
 
-    console.log(globalFetching);
+    /* const {data:data2,fetchNextPage}=useInfiniteQuery({
+        queryKey:['infinit query test'],
+        queryFn:infinitQuery,
+        initialPageParam:2,
+        getNextPageParam: (lastPage, pages) =>4,
+    }) */
 
-    const {isLoading,isPending,error,data,isSuccess,isFetching,isStale,fetchStatus}=useQuery({
-        queryKey:['posts keys'],
-        queryFn:homeLoader,
-        staleTime:5000,
-        refetchOnWindowFocus:true,
-        networkMode:'always'
+    const mutation=useMutation({
+        mutationKey:['mutation key'],
+        mutationFn:postTodo
     })
+
+    console.log(mutation.data);
+
+
+/* 
+    {
+        username:'testuser',
+        usermail:'testmail',
+        userphone:'testphone',
+        active:'1'
+    } */
+
+
+     const globalFetching = useIsFetching()
+
+    //console.log(globalFetching);
+
+    const {isLoading,isPending,error,data,isSuccess,isFetching,isStale,refetch,fetchStatus}=useQuery({
+        queryKey:['posts keys'],
+        queryFn:homeLoader2,
+        //staleTime:5000,
+        refetchOnWindowFocus:true,
+        networkMode:'always',
+        //initialData:[]
+        
+    })
+
+   
 
 
     if(error) {
         console.log('error',error);
     }
 
-    //console.log(`loading=> ${isLoading}`,`fetching => ${isFetching}`,data,`pending=> ${isPending}`,`success=>${isSuccess}`);
+    /* console.log(`loading=> ${isLoading}`,`fetching => ${isFetching}`,data,`pending=> ${isPending}`,`success=>${isSuccess}`); */
 
     if(isFetching) {
         //console.log(`fetching => ${isFetching}`,fetchStatus);
@@ -100,14 +147,14 @@ export const Home=()=> {
 
         return <h1>Wait...</h1>
     }
+ 
 
-
-    const elements=data||[]
+    const elements=data
 
 
     //const loaderData=useLoaderData() as DataType[];
 
-    const unorderLists=elements.map((element)=> {
+    const unorderLists=elements?.map((element)=> {
 
         const {id,usermail,username,userphone}=element
 
@@ -141,6 +188,13 @@ export const Home=()=> {
             <section className="flex flex-wrap justify-evenly w-full" >
                 {unorderLists.length>0?unorderLists:<h1>Empty</h1>}
             </section>
+            <button onClick={()=>refetch()} >refetch</button>
+            <button onClick={()=>mutation.mutate({
+            username:'testuser',
+            usermail:'testmail',
+            userphone:'testphone',
+            active:'1'
+        })} >add mutation data </button>
         </div>
 
     )
