@@ -1,6 +1,6 @@
+import { keepPreviousData,useInfiniteQuery, useIsFetching, useMutation,useQueries,useQuery,useQueryClient} from "@tanstack/react-query"
 import ky from "ky"
 import React from "react"
-import { useQuery,useMutation,keepPreviousData,useQueryClient,useQueries,useIsFetching, useInfiniteQuery } from "@tanstack/react-query"
 import { Form, Link, useLoaderData } from "react-router-dom"
 
 export const block=new Promise((res,rej)=> {
@@ -61,7 +61,7 @@ const postTodo=async (element)=>{
 export const infinitQuery=async ({pageParam})=> {
 
     console.log(pageParam);
-    const data=await ky.get(`http://localhost:3000/data?_limit=3&_start=1`).json<DataType[]>()
+    const data=await ky.get("http://localhost:3000/data?_limit=3&_start=1").json<DataType[]>()
 
     return data
 
@@ -188,6 +188,7 @@ export const Home=()=> {
                                 Edite
                             </Link>
                             <Form action={`/delete/${id} `} method="POST">
+                                {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
                                 <button  className="bg-red-700 px-2 rounded text-lg text-white" >
                                     delete
                                 </button>
@@ -205,13 +206,16 @@ export const Home=()=> {
     return (
         
         <div className="flex flex-col w-full overflow-x-hidden" >
+            {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
             <button onClick={()=>refetch()} >refetch</button>
+            {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
             <button onClick={()=>mutation.mutate({
             username:'testuser',
             usermail:'testmail2',
             userphone:'testphone',
             active:'1'
         })} >add mutation data </button>
+        {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
         <button onClick={()=>queryClient.invalidateQueries()} >invalidate</button>
             <section className="flex flex-wrap justify-evenly w-full" >
                 {unorderLists.length>0?unorderLists:<h1>Empty</h1>}

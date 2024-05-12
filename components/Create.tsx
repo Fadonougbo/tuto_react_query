@@ -4,15 +4,15 @@ import { Form, redirectDocument } from "react-router-dom";
 
 export const Create=()=> {
 
-    const inpref=useRef<HTMLElement>(null)
+/*     const inpref=useRef<HTMLElement>(null)
   useEffect(()=> {
     console.log(inpref?.current);
-  })
+  }) */
 
     return (
         <div className="p-3 w-full" >
             <form  className="flex flex-col w-full" method="POST">
-                <section ref={inpref} className="flex flex-col items-center w-full b" >
+                <section className="flex flex-col items-center w-full b" >
                     <div  className="flex flex-col m-4 w-3/4" >
                         <label htmlFor="username">User name</label>
                         <input type="text"  name="username" minLength={2} id="username" className="" />

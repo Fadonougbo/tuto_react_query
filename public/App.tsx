@@ -1,16 +1,17 @@
-import React from "react"
-import { createRoot } from "react-dom/client"
-import {createBrowserRouter,RouterProvider} from "react-router-dom";
-import { NotFound } from "../components/NotFound";
-import { Root } from "../components/Root";
-import { Create, createAction } from "../components/Create";
-import { Home, homeLoader } from "../components/Home";
-import { Update, updateAction, updateLoader } from "../components/Update";
-import { deleteAction } from "../components/Delete";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import React from "react"
+import { createRoot } from "react-dom/client"
+import {RouterProvider,createBrowserRouter} from "react-router-dom";
+import { Create, createAction } from "../components/Create";
+import { deleteAction } from "../components/Delete";
+import { Home, homeLoader } from "../components/Home";
+import { NotFound } from "../components/NotFound";
+import { Root } from "../components/Root";
+import { Update, updateAction, updateLoader } from "../components/Update";
 
 const client=new QueryClient()
+
   const router = createBrowserRouter([
     {
        path:'/',
@@ -46,10 +47,8 @@ const client=new QueryClient()
   
 
 createRoot(document.querySelector('#root') as HTMLDivElement).render(
-
   
     <RouterProvider router={router} />
-  
   
   )
 
