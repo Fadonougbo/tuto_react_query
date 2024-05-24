@@ -36,8 +36,6 @@ export const AboutAction=async (x)=> {
 export const About=()=> {
 
 
-    const data=useActionData()
-
 
     return (
         <>
