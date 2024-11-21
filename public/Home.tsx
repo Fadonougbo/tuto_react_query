@@ -1,40 +1,69 @@
-import React, { memo, useContext, useEffect, useRef, useState } from "react"
-import { ThemeContext, ThemeController } from "./context";
+import { motion } from "motion/react"
+import React, {
+	lazy,
+	Suspense,
+	useEffect,
+	useState,
+} from "react";
 
-
-  const Home=({children})=> {
-    //console.log([].includes(''));
-    const [count,setCount]=useState(0)
-
-    const userRef=useRef(null);
-
-    const countRef=useRef(count)
-
-    countRef.current=count
-
-    const handleClick=()=> {
-        setCount((c)=>c+1)
-      
-        //throw new Error('test error')
-    }
-
-    console.log('render','home');
-
-
-
-    return <div>
-        {/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
-        <h1 onClick={handleClick} >home {count} </h1>
-          <User/>
-        </div>
+const variant={
+  n1:{opacity:1},
+  n2:{opacity:0}
 }
 
-export default Home
- 
-export  const User=memo(()=> {
-  console.log('render','user');
+const Home = ({ children }) => {
+	console.log("home render");
 
-  const theme=useContext(ThemeContext)
+	const Data = lazy(() => import("./Data"));
 
-    return <><h1  >User {theme} </h1></>
-})
+  const [toggle,setToggle]=useState(false)
+
+  const handleClick=()=> {
+    setToggle((value)=>!value)
+  }
+
+	return (
+		<div>
+      
+			<h1>Home</h1>
+      <motion.span variants={variant} animate={toggle?'n1':'n2'}>
+        HELLOOOO!
+      </motion.span>	
+      <br />	
+    
+    {/* biome-ignore lint/a11y/useButtonType: <explanation> */}
+    <button onClick={handleClick} >click me</button>
+		</div>
+	);
+};
+
+export default Home;
+
+/* type X=keyof JSX.IntrinsicElements;
+
+type  u={
+  name:string,
+  age:number
+}
+const y:u[keyof u]=""; */
+
+/* type CompoType = {
+	As:HTML;
+  children:never
+};
+ */
+
+
+const Compo = ({ As = "input",children, ...props }:{As:any,children?:any}) => {
+  
+	// biome-ignore lint/style/useSelfClosingElements: <explanation>
+  	return <As {...props} />; 
+};
+
+export const User = () => {
+	console.log("User render");
+
+	useEffect(() => {}, []);
+
+	return <h1>User </h1>;
+};
