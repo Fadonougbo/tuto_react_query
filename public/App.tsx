@@ -1,11 +1,11 @@
-import React, { lazy, Suspense } from "react"
+import React from "react"
 import {createRoot} from "react-dom/client"
-import { ErrorBoundary } from "react-error-boundary"
-import Home, { User } from "./Home"
+import Home from "./Home"
+
 
 const App=()=> {
  
-    return <Home></Home>
+    return <Home/>
 }
 
 createRoot(document.querySelector('#root') as HTMLDivElement).render(<App/>)
